@@ -7,6 +7,7 @@ export default function makePeptaibiotic(peptaibioticInfo=requiredParam('peptaib
     return Object.freeze(normalPeptaibiotic);
 
     function validate({
-        
-    })
+        petabioticsGroup = requiredParam('petabioticsGroup'),
+        ...otherInfo
+      } = {})
 }
