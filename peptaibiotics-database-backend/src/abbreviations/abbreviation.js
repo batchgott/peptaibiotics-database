@@ -27,8 +27,15 @@ export default function makeAbbreviation (
       validateString('category', category);
       validateString('abbreviation', abbreviation);
       validateString('residueFree', residueFree);
+      validateNumberGreaterEqualZero('C',c);
+      validateNumberGreaterEqualZero('H',h);
+      validateNumberGreaterEqualZero('N',n);
+      validateNumberGreaterEqualZero('O',o);
+      validateNumberGreaterEqualZero('S',s);
+      validateNumberGreaterEqualZero('MW',mw);
+      validateNumberGreaterEqualZero('MW_monoisotopic',mwMonoisotopic);
       validateString('position', position);
-      return { category, abbreviation, residueFree, ...otherInfo }
+      return { category, abbreviation, residueFree,c,h,n,o,s,mw,mwMonoisotopic,position, ...otherInfo }
     }
   
     function validateString (label, string) {
@@ -38,6 +45,13 @@ export default function makeAbbreviation (
         )
       }
     }
+    function validateNumberGreaterEqualZero (label, number) {
+        if (!isNumberGreaterEqualZero(number)) {
+          throw new InvalidPropertyError(
+            `A abbreviations's ${label} must be a number greater or equal to zero.`
+          )
+        }
+      }
   
     // function normalize ({ category, abbreviation, residueFree,c,h,n,o,s,mw,mwMonoisotopic,position, ...otherInfo }) {
     //   return {
