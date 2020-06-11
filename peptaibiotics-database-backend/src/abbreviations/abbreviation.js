@@ -1,11 +1,12 @@
 import isString from "../helpers/is-string";
 import { InvalidPropertyError } from '../helpers/errors';
-
+import requiredParam from "../helpers/required-param";
+import isNumberGreaterEqualZero from "../helpers/is-number-greater-equal-zero";
 
 export default function makeAbbreviation (
     abbreviationInfo = requiredParam('abbreviationInfo')
   ) {
-    const validAbbreviation = validate(abbreviationInfo)
+    const validAbbreviation = validate(abbreviationInfo);
     // const normalAbbreviation = normalize(validAbbreviation)
     // return Object.freeze(normalAbbreviation)
     return Object.freeze(validAbbreviation)

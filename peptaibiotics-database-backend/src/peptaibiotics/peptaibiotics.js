@@ -9,5 +9,5 @@ export default function makePeptaibiotic(peptaibioticInfo=requiredParam('peptaib
     function validate({
         petabioticsGroup = requiredParam('petabioticsGroup'),
         ...otherInfo
-      } = {})
+      } = {}){}
 }
