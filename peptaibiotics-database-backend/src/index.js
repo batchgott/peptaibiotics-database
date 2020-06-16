@@ -16,8 +16,8 @@ function peptiabioticsController(req,res){
     const httpRequest=adaptRequest(req);
 
 }
-router.all('/abbreviations', abbreviationsController)
-router.get('/abbreviations/:id', abbreviationsController)
+router.all('/abbreviations', abbreviationsController);
+router.get('/abbreviations/:id', abbreviationsController);
 
 function abbreviationsController (req, res) {
   const httpRequest = adaptRequest(req);

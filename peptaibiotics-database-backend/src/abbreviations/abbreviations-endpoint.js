@@ -10,14 +10,34 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
       switch (httpRequest.method) {
         case 'POST':
           return postAbbreviation(httpRequest);
-  
-  
+
+        case 'GET':
+            return getAbbreviations(httpRequest);  
+
         default:
           return makeHttpError({
             statusCode: 405,
             errorMessage: `${httpRequest.method} method not allowed.`
           })
       }
+    }
+
+    async function getAbbreviations(httpRequest){
+        const {id}=httpRequest.pathParams || {};
+        const {abbreviation}=httpRequest.queryParams || {};
+        const {max,before,after}=httpRequest.queryParams || {}
+        const result= id 
+        ? await abbreviationList.findById({abbreviationId:id})
+        : abbreviation
+        ? await abbreviationList.findByAbbreviation({abbreviation:abbreviation})
+        : await abbreviationList.getItems({max,before,after});
+        return {
+            headers:{
+                'Content-Type':'application/json'
+            },
+            statusCode:200,
+            data:JSON.stringify(result)
+        }
     }
 
     async function postAbbreviation (httpRequest) {
