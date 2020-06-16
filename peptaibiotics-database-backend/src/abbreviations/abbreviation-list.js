@@ -7,7 +7,8 @@ export default function makeAbbreviationList ({ database }) {
       add,
       findById,
       getItems,
-      findByAbbreviation
+      findByAbbreviation,
+      remove
     })
   
     async function getItems({max=100,before,after}={}){
@@ -43,6 +44,19 @@ export default function makeAbbreviationList ({ database }) {
       if(found)
         return documentToAbbreviation(found);
       return null;
+    }
+    
+    async function remove(abbreviationId){
+      const db=await database;
+      const  {deletedCount}  = await db
+      .collection('abbreviations')
+      .deleteOne({_id:db.makeId(abbreviationId)})
+      .catch(mongoError => {
+        const [errorCode] = mongoError.message.split(' ');
+        console.log(mongoError);
+        throw mongoError;
+      });
+    return {success: deletedCount === 1}
     }
 
     async function add ({ abbreviationId, ...abbreviation }) {

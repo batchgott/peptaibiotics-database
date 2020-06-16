@@ -1,5 +1,6 @@
 import makeHttpError from "../helpers/http-error"
 import makeAbbreviation from "./abbreviation";
+import createResponse from "../helpers/create-response"
 import {
     InvalidPropertyError,
     RequiredParameterError
@@ -14,12 +15,27 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         case 'GET':
             return getAbbreviations(httpRequest);  
 
+        case 'DELETE':
+            return deleteAbbreviation(httpRequest);
+
         default:
           return makeHttpError({
             statusCode: 405,
             errorMessage: `${httpRequest.method} method not allowed.`
           })
       }
+    }
+
+    async function deleteAbbreviation(httpRequest){
+        const {id}=httpRequest.pathParams;
+        if (!id) {
+            return makeHttpError({
+              statusCode: 400,
+              errorMessage: 'Bad request. No id given.'
+            })
+          }
+        const result=await abbreviationList.remove(id);
+        return createResponse({result:result});
     }
 
     async function getAbbreviations(httpRequest){
