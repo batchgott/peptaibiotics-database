@@ -28,12 +28,8 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
 
     async function deleteAbbreviation(httpRequest){
         const {id}=httpRequest.pathParams;
-        if (!id) {
-            return makeHttpError({
-              statusCode: 400,
-              errorMessage: 'Bad request. No id given.'
-            })
-          }
+        if (!id)
+            return makeHttpError({errorMessage: 'Bad request. No id given.'})
         const result=await abbreviationList.remove(id);
         return createResponse({result:result});
     }
@@ -47,21 +43,13 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         : abbreviation
         ? await abbreviationList.findByAbbreviation({abbreviation:abbreviation})
         : await abbreviationList.getItems({max,before,after});
-        return {
-            headers:{
-                'Content-Type':'application/json'
-            },
-            statusCode:200,
-            data:JSON.stringify(result)
-        }
+        return createResponse({result:result});
     }
 
     async function postAbbreviation (httpRequest) {
         let abbreviationInfo = httpRequest.body
         if (!abbreviationInfo) {
-          return makeHttpError({
-            statusCode: 400,
-            errorMessage: 'Bad request. No POST body.'
+          return makeHttpError({errorMessage: 'Bad request. No POST body.'
           })
         }
     
@@ -69,10 +57,7 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
           try {
             abbreviationInfo = JSON.parse(abbreviationInfo);
           } catch {
-            return makeHttpError({
-              statusCode: 400,
-              errorMessage: 'Bad request. POST body must be valid JSON.'
-            })
+            return makeHttpError({errorMessage: 'Bad request. POST body must be valid JSON.'})
           }
         }
     
