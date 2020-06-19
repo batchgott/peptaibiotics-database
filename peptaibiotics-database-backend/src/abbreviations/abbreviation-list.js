@@ -8,7 +8,8 @@ export default function makeAbbreviationList ({ database }) {
       findById,
       getItems,
       findByAbbreviation,
-      remove
+      remove,
+      update
     })
   
     async function getItems({max=100,before,after}={}){
@@ -27,10 +28,10 @@ export default function makeAbbreviationList ({ database }) {
     }
 
     async function findById({abbreviationId}){
-      const db=await database;
-      const found=await db
-      .collection('abbreviations')
-      .findOne({_id:db.makeId(abbreviationId)});
+        const db=await database;
+        const found=await db
+        .collection('abbreviations')
+        .findOne({_id:db.makeId(abbreviationId)});
       if(found)
         return documentToAbbreviation(found);
       return null;
@@ -59,13 +60,24 @@ export default function makeAbbreviationList ({ database }) {
     return {success: deletedCount === 1}
     }
 
+    async function update(abbreviation){
+      const db=await database;
+      abbreviation._id=db.makeId(abbreviation._id);
+      const { modifiedCount, ops } = await db
+        .collection('abbreviations')
+        .replaceOne({_id:abbreviation._id},abbreviation);
+        return {
+          success: modifiedCount === 1,
+          updated: documentToAbbreviation(ops[0])
+        }
+    }
+
     async function add ({ abbreviationId, ...abbreviation }) {
       
       const db = await database;
       
-      if (abbreviationId) {
-        abbreviation._id = db.makeId(abbreviationId)
-      }
+      if (abbreviationId)
+        abbreviation._id = db.makeId(abbreviationId);
       const abbreviationFound=await db
         .collection('abbreviations')
         .findOne({abbreviation:abbreviation.abbreviation});
@@ -86,7 +98,7 @@ export default function makeAbbreviationList ({ database }) {
       }
     }
 
-    function documentToAbbreviation ({ _id: abbreviationId, ...doc }) {
-      return makeAbbreviation({ abbreviationId, ...doc })
+    function documentToAbbreviation ({...doc }) {
+        return makeAbbreviation({...doc })
     }
   }

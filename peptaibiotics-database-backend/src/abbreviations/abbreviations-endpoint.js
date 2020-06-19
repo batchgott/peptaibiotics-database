@@ -18,6 +18,9 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         case 'DELETE':
             return deleteAbbreviation(httpRequest);
 
+        case 'PUT':
+            return putAbbreviation(httpRequest);            
+
         default:
           return makeHttpError({
             statusCode: 405,
@@ -31,6 +34,14 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         if (!id)
             return makeHttpError({errorMessage: 'Bad request. No id given.'})
         const result=await abbreviationList.remove(id);
+        return createResponse({result:result});
+    }
+
+    async function putAbbreviation(httpRequest){
+        const {_id}=httpRequest.body;
+        if (!_id)
+            return makeHttpError({errorMessage: 'Bad request. Abbreviation does not exist.'})
+        const result=await abbreviationList.update(httpRequest.body);
         return createResponse({result:result});
     }
 
