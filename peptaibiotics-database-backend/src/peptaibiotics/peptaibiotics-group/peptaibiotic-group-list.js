@@ -5,8 +5,19 @@ export default function makePeptaibioticGroupList({database}){
     return Object.freeze({
         getItems,
         findByName,
-        add
+        add,
+        findById
     });
+
+    async function findById(id){
+        const db=await database;
+        const found=await db
+        .collection('peptaibiotic-groups')
+        .findOne({_id:db.makeId(id)});
+      if(found)
+        return documentToPeptaibioticGroup(found);
+      return null;
+    }
 
     async function getItems({max=100,before,after}={}){
         const db=await database;
@@ -37,6 +48,9 @@ export default function makePeptaibioticGroupList({database}){
         const db=await database;
         if(peptaibioticGroupId)
             peptaibioticGroup._id=db.makeId(peptaibioticGroupId);
+        const peptaibioticGroupFound=await findByName(peptaibioticGroup.name);
+        if(peptaibioticGroupFound)
+              throw new UniqueConstraintError('name')
         const {result,ops}=await db
             .collection("peptaibiotic-groups")
             .insertOne(peptaibioticGroup);

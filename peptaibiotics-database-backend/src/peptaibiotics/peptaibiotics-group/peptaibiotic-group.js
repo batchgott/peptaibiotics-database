@@ -4,7 +4,7 @@ import { InvalidPropertyError } from "../../helpers/errors";
 
 export default function makePeptaibioticGroup(
     peptaibioticGroupInfo=requiredParam("peptaibioticGroupInfo")){
-    
+        
         const validPeptaibioticGroup=validate(peptaibioticGroupInfo);
         return Object.freeze(validPeptaibioticGroup);
 

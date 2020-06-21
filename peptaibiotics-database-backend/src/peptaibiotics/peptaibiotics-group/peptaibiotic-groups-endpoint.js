@@ -1,6 +1,8 @@
 import makeHttpError from "../../helpers/http-error";
 import makePeptaibioticGroup from "./peptaibiotic-group";
 import createResponse from "../../helpers/create-response";
+import {InvalidPropertyError,RequiredParameterError} from "../../helpers/errors";
+import { restart } from "nodemon";
 
 export default function makePeptaibioticGroupsEndpointHandler({peptaibioticGroupList}){
     return async function handle(httpRequest){
@@ -8,12 +10,29 @@ export default function makePeptaibioticGroupsEndpointHandler({peptaibioticGroup
             case 'POST':
                 return postPeptaibioticGroup(httpRequest);
 
+            case 'GET':
+                return getPeptaibioticGroups(httpRequest);
+
             default:
                 return makeHttpError({
                     statusCode: 405,
                     errorMessage: `${httpRequest.method} method not allowed.`
                   });
         }
+    }
+
+    async function getPeptaibioticGroups(httpRequest){
+        const {id}=httpRequest.pathParams || {};
+        const {name}=httpRequest.queryParams || {};
+        const {max,before,after}=httpRequest.queryParams || {};
+        const result= id 
+        ? await peptaibioticGroupList.findById(id)
+        : name
+        ? await peptaibioticGroupList.findByName(name)
+        : await peptaibioticGroupList.getItems({max,before,after});
+
+        
+        return createResponse({result:result});
     }
 
     async function postPeptaibioticGroup(httpRequest){
