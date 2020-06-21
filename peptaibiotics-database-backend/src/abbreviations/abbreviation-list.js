@@ -27,7 +27,7 @@ export default function makeAbbreviationList ({ database }) {
         .toArray()).map(documentToAbbreviation);
     }
 
-    async function findById({abbreviationId}){
+    async function findById(abbreviationId){
         const db=await database;
         const found=await db
         .collection('abbreviations')
@@ -37,11 +37,11 @@ export default function makeAbbreviationList ({ database }) {
       return null;
     }
 
-    async function findByAbbreviation({abbreviation}){
+    async function findByAbbreviation(abbreviation){
       const db=await database;
       const found=await db
         .collection('abbreviations')
-        .findOne({abbreviation:abbreviation});
+        .findOne({abbreviation:{$regex:new RegExp(`^${abbreviation}$`,'i')}});
       if(found)
         return documentToAbbreviation(found);
       return null;
@@ -78,9 +78,7 @@ export default function makeAbbreviationList ({ database }) {
       
       if (abbreviationId)
         abbreviation._id = db.makeId(abbreviationId);
-      const abbreviationFound=await db
-        .collection('abbreviations')
-        .findOne({abbreviation:abbreviation.abbreviation});
+      const abbreviationFound=await findByAbbreviation(abbreviation.abbreviation);
       if(abbreviationFound){
         throw new UniqueConstraintError('abbreviations')
       }

@@ -50,9 +50,9 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         const {abbreviation}=httpRequest.queryParams || {};
         const {max,before,after}=httpRequest.queryParams || {}
         const result= id 
-        ? await abbreviationList.findById({abbreviationId:id})
+        ? await abbreviationList.findById(id)
         : abbreviation
-        ? await abbreviationList.findByAbbreviation({abbreviation:abbreviation})
+        ? await abbreviationList.findByAbbreviation(abbreviation)
         : await abbreviationList.getItems({max,before,after});
         return createResponse({result:result});
     }
@@ -75,13 +75,7 @@ export default function makeAbbreviationsEndpointHandler ({ abbreviationList }) 
         try {
           const abbreviation = makeAbbreviation(abbreviationInfo);
           const result = await abbreviationList.add(abbreviation);
-          return {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            statusCode: 201,
-            data: JSON.stringify(result)
-          }
+          return createResponse({statusCode:201,result:result})
         } catch (e) {
           return makeHttpError({
             errorMessage: e.message,
